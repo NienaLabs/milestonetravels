@@ -1,0 +1,364 @@
+/* Services Carousel CSS based on slider_1 */
+.services-carousel {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    position: relative;
+    font-family: var(--font-body);
+    background-color: var(--navy-deep);
+}
+
+.services-carousel .list .item {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.services-carousel .list .item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Premium gradient overlay to ensure text contrast */
+.services-carousel .list .item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(7, 17, 53, 0.8) 0%, rgba(7, 17, 53, 0.2) 60%, transparent 100%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.services-carousel .list .item .content {
+    position: absolute;
+    top: 20%;
+    width: 1140px;
+    max-width: 90%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding-right: 30%;
+    box-sizing: border-box;
+    color: var(--white-pure);
+    text-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    z-index: 10;
+}
+
+.services-carousel .list .item .author {
+    font-weight: bold;
+    letter-spacing: 8px;
+    font-size: 14px;
+    color: var(--white-muted);
+}
+
+.services-carousel .list .item .title,
+.services-carousel .list .item .topic {
+    font-size: 5em;
+    font-weight: 900;
+    line-height: 1.1em;
+    font-family: var(--font-headline);
+    text-transform: uppercase;
+}
+
+.services-carousel .list .item .topic {
+    color: var(--navy-sky);
+}
+
+.services-carousel .list .item .des {
+    margin-top: 20px;
+    font-size: 1.1em;
+    color: var(--white-soft);
+    max-width: 600px;
+    line-height: 1.6;
+}
+
+.services-carousel .list .item .buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.services-carousel .list .item .buttons button {
+    border: none;
+    background-color: var(--white-pure);
+    color: var(--navy-deep);
+    letter-spacing: 2px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    padding: 12px 30px;
+    cursor: pointer;
+    transition: 0.3s;
+    text-transform: uppercase;
+}
+
+.services-carousel .list .item .buttons button:nth-child(2) {
+    background-color: transparent;
+    border: 1px solid var(--white-pure);
+    color: var(--white-pure);
+}
+
+.services-carousel .list .item .buttons button:hover {
+    background-color: var(--navy-sky);
+    color: var(--white-pure);
+    border-color: var(--navy-sky);
+}
+
+/* thumbnails */
+.services-carousel .thumbnail {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    width: max-content;
+    z-index: 100;
+    display: flex;
+    gap: 20px;
+}
+
+.services-carousel .thumbnail .item {
+    width: 150px;
+    height: 220px;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.services-carousel .thumbnail .item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+}
+
+.services-carousel .thumbnail .item .content {
+    color: var(--white-pure);
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+}
+
+.services-carousel .thumbnail .item .content .title {
+    font-weight: 600;
+    font-family: var(--font-headline);
+    font-size: 1.1em;
+}
+
+.services-carousel .thumbnail .item .content .description {
+    font-weight: 400;
+    font-size: 0.8em;
+    color: var(--navy-sky);
+}
+
+/* arrows */
+.services-carousel .arrows {
+    position: absolute;
+    top: 80%;
+    right: 52%;
+    z-index: 100;
+    width: 300px;
+    max-width: 30%;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.services-carousel .arrows button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--white-pure);
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 20px;
+    transition: .3s;
+    cursor: pointer;
+}
+
+.services-carousel .arrows button:hover {
+    background-color: var(--white-pure);
+    color: var(--navy-deep);
+}
+
+/* animation classes */
+.services-carousel .list .item:nth-child(1) {
+    z-index: 1;
+}
+
+.services-carousel .list .item:nth-child(1) .content .author,
+.services-carousel .list .item:nth-child(1) .content .title,
+.services-carousel .list .item:nth-child(1) .content .topic,
+.services-carousel .list .item:nth-child(1) .content .des,
+.services-carousel .list .item:nth-child(1) .content .buttons {
+    transform: translateY(50px);
+    filter: blur(20px);
+    opacity: 0;
+    animation: showContent .5s 1s linear 1 forwards;
+}
+
+@keyframes showContent {
+    to {
+        transform: translateY(0px);
+        filter: blur(0px);
+        opacity: 1;
+    }
+}
+
+.services-carousel .list .item:nth-child(1) .content .title { animation-delay: 1.2s!important; }
+.services-carousel .list .item:nth-child(1) .content .topic { animation-delay: 1.4s!important; }
+.services-carousel .list .item:nth-child(1) .content .des { animation-delay: 1.6s!important; }
+.services-carousel .list .item:nth-child(1) .content .buttons { animation-delay: 1.8s!important; }
+
+.services-carousel.next .list .item:nth-child(1) img {
+    width: 150px;
+    height: 220px;
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    border-radius: 30px;
+    animation: showImage .5s linear 1 forwards;
+}
+
+@keyframes showImage {
+    to {
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
+}
+
+.services-carousel.next .thumbnail .item:nth-last-child(1) {
+    overflow: hidden;
+    animation: showThumbnail .5s linear 1 forwards;
+}
+
+.services-carousel.prev .list .item img {
+    z-index: 100;
+}
+
+@keyframes showThumbnail {
+    from {
+        width: 0;
+        opacity: 0;
+    }
+}
+
+.services-carousel.next .thumbnail {
+    animation: effectNext .5s linear 1 forwards;
+}
+
+@keyframes effectNext {
+    from {
+        transform: translateX(150px);
+    }
+}
+
+
+.services-carousel.prev .list .item:nth-child(2) {
+    z-index: 2;
+}
+
+.services-carousel.prev .list .item:nth-child(2) img {
+    animation: outFrame 0.5s linear 1 forwards;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+@keyframes outFrame {
+    to {
+        width: 150px;
+        height: 220px;
+        bottom: 50px;
+        left: 50%;
+        border-radius: 20px;
+    }
+}
+
+.services-carousel.prev .thumbnail .item:nth-child(1) {
+    overflow: hidden;
+    opacity: 0;
+    animation: showThumbnail .5s linear 1 forwards;
+}
+
+
+
+.services-carousel.prev .list .item:nth-child(2) .content .author,
+.services-carousel.prev .list .item:nth-child(2) .content .title,
+.services-carousel.prev .list .item:nth-child(2) .content .topic,
+.services-carousel.prev .list .item:nth-child(2) .content .des,
+.services-carousel.prev .list .item:nth-child(2) .content .buttons {
+    animation: contentOut 1.5s linear 1 forwards!important;
+}
+
+@keyframes contentOut {
+    to {
+        transform: translateY(-150px);
+        filter: blur(20px);
+        opacity: 0;
+    }
+}
+
+/* Mobile Responsiveness */
+@media screen and (max-width: 768px) {
+    .services-carousel .list .item .content {
+        padding-right: 0;
+        top: 15%;
+        padding-left: 5%;
+        max-width: 100%;
+        text-align: left;
+    }
+    .services-carousel .list .item .title,
+    .services-carousel .list .item .topic {
+        font-size: 3em;
+    }
+    .services-carousel .list .item .des {
+        font-size: 14px;
+        max-width: 90%;
+        margin-top: 10px;
+    }
+    .services-carousel .thumbnail {
+        bottom: 20px;
+        left: 5%;
+        gap: 10px;
+        width: 90%;
+        transform: none; /* remove -50% translateX */
+        overflow-x: auto;
+        padding-bottom: 10px; /* scrollbar space */
+    }
+    .services-carousel .thumbnail .item {
+        width: 120px;
+        height: 180px;
+    }
+    .services-carousel .arrows {
+        top: 65%;
+        right: 5%;
+        width: auto;
+    }
+    
+    /* Ensure image transitions look correct on mobile */
+    .services-carousel.next .list .item:nth-child(1) img {
+        width: 120px;
+        height: 180px;
+        bottom: 20px;
+        left: 5%;
+        transform: none;
+    }
+    
+    @keyframes outFrame {
+        to {
+            width: 120px;
+            height: 180px;
+            bottom: 20px;
+            left: 5%;
+            border-radius: 20px;
+        }
+    }
+}

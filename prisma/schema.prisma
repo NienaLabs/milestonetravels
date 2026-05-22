@@ -1,0 +1,159 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean   @default(false)
+  image         String?
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+  bookings      Booking[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Tour {
+  id            String    @id @default(cuid())
+  title         String
+  description   String
+  destination   String
+  departureDate DateTime
+  returnDate    DateTime
+  price         Float
+  image         String?
+  spots         Int       @default(20)
+  groupChatLink String?
+  enquiryPhone  String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  bookings      Booking[]
+  reviews       Review[]
+
+  @@map("tour")
+}
+
+model Booking {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tourId      String
+  tour        Tour      @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  totalPrice  Float
+  amountPaid  Float     @default(0)
+  status      String    @default("PENDING")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  payments    Payment[]
+
+  @@index([userId])
+  @@index([tourId])
+  @@map("booking")
+}
+
+model Payment {
+  id          String   @id @default(cuid())
+  bookingId   String
+  booking     Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  amount      Float
+  method      String   @default("paystack")
+  reference   String   @unique
+  status      String   @default("SUCCESS")
+  createdAt   DateTime @default(now())
+
+  @@index([bookingId])
+  @@map("payment")
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  message   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("announcement")
+}
+
+model Review {
+  id           String   @id @default(cuid())
+  tourId       String
+  tour         Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  reviewerName String
+  rating       Int
+  comment      String
+  createdAt    DateTime @default(now())
+
+  @@index([tourId])
+  @@map("review")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
