@@ -35,9 +35,9 @@ const COL_DURATION  = 0.55;
 const COL_STAGGER   = 0.07;
 
 export default function HeroSlider() {
-  const containerRef = useRef(null);
-  const currentRef   = useRef(null);
-  const incomingRef  = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const currentRef   = useRef<HTMLDivElement>(null);
+  const incomingRef  = useRef<HTMLDivElement>(null);
 
   const currentIdxRef  = useRef(0);
   const incomingIdxRef = useRef(1);
@@ -48,12 +48,12 @@ export default function HeroSlider() {
     incoming: 1,
   });
 
-  const currentCols  = useRef([]);
-  const incomingCols = useRef([]);
+  const currentCols  = useRef<(HTMLDivElement | null)[]>([]);
+  const incomingCols = useRef<(HTMLDivElement | null)[]>([]);
 
   useGSAP(() => {
     gsap.set(incomingCols.current, { yPercent: -100 });
-    gsap.set(incomingRef.current?.querySelector('.slide-meta'), { autoAlpha: 0 });
+    gsap.set(incomingRef.current?.querySelector('.slide-meta') as Element | null, { autoAlpha: 0 });
 
     const advance = () => {
       if (isAnimating.current) return;
@@ -73,7 +73,7 @@ export default function HeroSlider() {
 
           gsap.set(currentCols.current,  { yPercent: 0 });
           gsap.set(incomingCols.current, { yPercent: -100 });
-          gsap.set(incomingRef.current?.querySelector('.slide-meta'), { autoAlpha: 0 });
+          gsap.set(incomingRef.current?.querySelector('.slide-meta') as Element | null, { autoAlpha: 0 });
 
           isAnimating.current = false;
         },
@@ -87,7 +87,7 @@ export default function HeroSlider() {
       });
 
       tl.to(
-        incomingRef.current?.querySelector('.slide-meta'),
+        incomingRef.current?.querySelector('.slide-meta') as Element | null,
         { autoAlpha: 1, duration: 0.01 },
         '-=0',
       );
@@ -111,7 +111,7 @@ export default function HeroSlider() {
     return () => clearInterval(interval);
   }, { scope: containerRef });
 
-  const renderLayer = (slideIdx, colsRef, metaVisible) => {
+  const renderLayer = (slideIdx: number, colsRef: React.MutableRefObject<(HTMLDivElement | null)[]>, metaVisible: boolean) => {
     const slide = SLIDES[slideIdx];
     const colWidthPct = 100 / NUM_COLS;
 

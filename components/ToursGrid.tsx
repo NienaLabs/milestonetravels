@@ -8,8 +8,8 @@ import TourCard from './TourCard';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function ToursGrid({ tours }) {
-  const sectionRef = useRef(null);
+export default function ToursGrid({ tours }: { tours: any[] }) {
+  const sectionRef = useRef<HTMLElement>(null);
 
   useGSAP(() => {
     if (!sectionRef.current) return;
@@ -86,7 +86,7 @@ export default function ToursGrid({ tours }) {
 
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {tours.map(tour => (
+          {tours.map((tour: any) => (
             <div key={tour.id} className="tour-card">
               <TourCard tour={tour} />
             </div>
