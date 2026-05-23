@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { MapPin, Calendar, Users, ArrowUpRight } from 'lucide-react';
 
-export default function TourCard({ tour }) {
+export default function TourCard({ tour }: { tour: any }) {
   const departure = new Date(tour.departureDate).toLocaleDateString('en-GB', {
     day: 'numeric',
     month: 'short',
@@ -12,7 +12,7 @@ export default function TourCard({ tour }) {
   });
 
   const nights = Math.round(
-    (new Date(tour.returnDate) - new Date(tour.departureDate)) / (1000 * 60 * 60 * 24),
+    (new Date(tour.returnDate).getTime() - new Date(tour.departureDate).getTime()) / (1000 * 60 * 60 * 24),
   );
 
   return (
