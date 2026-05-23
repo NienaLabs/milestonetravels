@@ -231,3 +231,22 @@
 .slider-list::before {
     display: none;
 }
+
+/* Mobile Responsiveness */
+@media screen and (max-width: 768px) {
+    .slider-content {
+        top: 12%;
+        gap: 15px;
+    }
+    
+    .slider-list::after {
+        height: 52%;
+        width: min(480px, 100vw);
+    }
+    
+    .hero-aeroplane {
+        top: 2%;
+        left: 2%;
+        width: min(320px, 48vw);
+    }
+}

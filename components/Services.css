@@ -310,19 +310,21 @@
 @media screen and (max-width: 768px) {
     .services-carousel .list .item .content {
         padding-right: 0;
-        top: 15%;
+        top: 10%;
         padding-left: 5%;
-        max-width: 100%;
+        max-width: 95%;
         text-align: left;
     }
     .services-carousel .list .item .title,
     .services-carousel .list .item .topic {
-        font-size: 3em;
+        font-size: 2.2em;
+        line-height: 1.1;
     }
     .services-carousel .list .item .des {
-        font-size: 14px;
-        max-width: 90%;
-        margin-top: 10px;
+        font-size: 13px;
+        max-width: 95%;
+        margin-top: 6px;
+        line-height: 1.4;
     }
     .services-carousel .thumbnail {
         bottom: 20px;
@@ -338,9 +340,11 @@
         height: 180px;
     }
     .services-carousel .arrows {
-        top: 65%;
+        top: auto;
+        bottom: 220px;
         right: 5%;
         width: auto;
+        z-index: 100;
     }
     
     /* Ensure image transitions look correct on mobile */
