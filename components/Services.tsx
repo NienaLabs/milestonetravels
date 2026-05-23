@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import "./Services.css";
+import Link from "next/link";
 
 const initialItems = [
   {
@@ -108,8 +109,8 @@ export default function Services() {
               <div className="topic">{item.topic}</div>
               <div className="des">{item.description}</div>
               <div className="buttons">
-                <button>SEE MORE</button>
-                <button>BOOK NOW</button>
+                <Link href="/tours" className="px-8 py-3 border border-white-pure text-white-pure text-sm tracking-[0.12em] font-bold uppercase hover:bg-navy-bright hover:border-navy-bright transition-colors duration-300">
+              Explore Our Upcoming Tours          </Link>
               </div>
             </div>
           </div>

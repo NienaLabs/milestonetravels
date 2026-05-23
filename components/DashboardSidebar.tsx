@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, BellRing, HeadphonesIcon, Globe, LogOut, ChevronRight } from "lucide-react";
+import { LayoutDashboard, BellRing, HeadphonesIcon, Globe, LogOut, ChevronRight, Settings2Icon } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 
@@ -11,6 +11,7 @@ const navItems = [
   { label: "My Trips", href: "/dashboard", icon: LayoutDashboard },
   { label: "Announcements", href: "/dashboard/announcements", icon: BellRing },
   { label: "Support", href: "/dashboard/support", icon: HeadphonesIcon },
+  {label: "Settings", href: "/account/settings", icon: Settings2Icon}
 ];
 
 interface DashboardSidebarProps {

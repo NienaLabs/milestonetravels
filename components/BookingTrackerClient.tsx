@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Search, Globe, MapPin, Users, TrendingUp, ArrowRight, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface Payment {
   id: string;
@@ -64,22 +65,37 @@ export default function BookingTrackerClient({ initialTours }: { initialTours: T
         {/* Stats */}
         <div className="stats">
           <div className="stat">
-            <div className="stat-icon"><Globe size={18} /></div>
+                           <Image
+                              src="/icons/fire-heart.png"
+                              alt="fire-heart"
+                              width={48}
+                              height={48}
+                             />
             <div className="stat-content">
               <div className="stat-label">Active Tours</div>
               <div className="stat-val">{tours.length}</div>
             </div>
           </div>
           <div className="stat">
-            <div className="stat-icon"><Users size={18} /></div>
+                           <Image
+                              src="/icons/bank-notes.png"
+                              alt="bank-notes"
+                              width={48}
+                              height={48}
+                             />
             <div className="stat-content">
               <div className="stat-label">Total Bookings</div>
               <div className="stat-val">{totalBookings}</div>
             </div>
           </div>
           <div className="stat">
-            <div className="stat-icon"><TrendingUp size={18} /></div>
-            <div className="stat-content">
+                           <Image
+                              src="/icons/ticket.png"
+                              alt="ticket"
+                              width={48}
+                              height={48}
+                             />
+             <div className="stat-content">
               <div className="stat-label">Revenue Collected</div>
               <div className="stat-val"><sup>GH₵</sup>{totalRevenue.toLocaleString()}</div>
             </div>

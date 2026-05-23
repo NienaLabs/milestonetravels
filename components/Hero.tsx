@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import "./Hero.css";
+import Link from "next/link";
 
 const SLIDES = [
   {
@@ -92,9 +93,8 @@ export default function Hero() {
           {active.description}
         </p>
         <div className="mt-4" key={`btn-${activeSlide}`}>
-          <button className="px-8 py-3 border border-white-pure text-white-pure text-sm tracking-[0.12em] font-bold uppercase hover:bg-navy-bright hover:border-navy-bright transition-colors duration-300">
-            Let&apos;s Plan Your Journey
-          </button>
+          <Link href="/tours" className="px-8 py-3 border border-white-pure text-white-pure text-sm tracking-[0.12em] font-bold uppercase hover:bg-navy-bright hover:border-navy-bright transition-colors duration-300">
+          Explore Our Upcoming Tours          </Link>
         </div>
       </div>
     </section>

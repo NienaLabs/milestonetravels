@@ -197,8 +197,8 @@ export default function HeroSlider() {
         ))}
       </div>
 
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 text-white/40">
-        <span className="font-body text-[10px] tracking-[0.3em] uppercase">Explore</span>
+      <div className="absolute bottom-20 right-5 z-20 flex flex-col items-center gap-2 text-white/40">
+        <span className="font-body text-[10px] tracking-[0.3em] uppercase">Scroll to explore</span>
         <span className="block w-px h-8 bg-white/20 animate-pulse" />
       </div>
     </div>
