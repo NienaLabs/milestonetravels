@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Globe, Users, Receipt, PlusCircle, Megaphone } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Globe, Users, Receipt, PlusCircle, Megaphone, LogOut } from "lucide-react";
 import Image from "next/image";
+import { authClient } from "@/lib/auth-client";
 
 interface AdminSidebarProps {
   user: {
@@ -14,6 +16,17 @@ interface AdminSidebarProps {
 
 export default function AdminSidebar({ user }: AdminSidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/");
+        },
+      },
+    });
+  };
 
   const isActive = (path: string) => {
     if (path === "/admin") {
@@ -94,9 +107,9 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
         </Link>
       </nav>
 
-      {/* User Card */}
-      <div className="px-2 md:px-3 pb-6 border-t border-white/[0.06] pt-4">
-        <div className="flex items-center justify-center md:justify-start gap-3 px-2 md:px-3 py-2.5 rounded-lg md:mb-2">
+      {/* User Card + Sign Out */}
+      <div className="px-2 md:px-3 pb-6 border-t border-white/[0.06] pt-4 space-y-1">
+        <div className="flex items-center justify-center md:justify-start gap-3 px-2 md:px-3 py-2.5 rounded-lg">
           {user.image ? (
             <Image
               src={user.image}
@@ -115,6 +128,15 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
             <p className="font-body text-[11px] text-white-muted truncate">Admin Mode</p>
           </div>
         </div>
+
+        <button
+          onClick={handleSignOut}
+          title="Sign Out"
+          className="w-full flex items-center justify-center md:justify-start gap-3 px-0 md:px-3 py-3 md:py-2.5 rounded-lg text-sm font-body text-white-muted hover:text-white-pure hover:bg-red-500/10 transition-all duration-200 group border border-transparent hover:border-red-500/20"
+        >
+          <LogOut className="w-5 h-5 md:w-4 md:h-4 shrink-0 group-hover:text-red-400 transition-colors" />
+          <span className="hidden md:block group-hover:text-red-400 transition-colors">Sign Out</span>
+        </button>
       </div>
     </aside>
   );

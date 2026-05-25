@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, BellRing, HeadphonesIcon, Globe, LogOut, ChevronRight, Settings2Icon } from "lucide-react";
+import { LayoutDashboard, BellRing, HeadphonesIcon, Globe, LogOut, ChevronRight, Settings2Icon, Compass } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 
@@ -11,7 +11,8 @@ const navItems = [
   { label: "My Trips", href: "/dashboard", icon: LayoutDashboard },
   { label: "Announcements", href: "/dashboard/announcements", icon: BellRing },
   { label: "Support", href: "/dashboard/support", icon: HeadphonesIcon },
-  {label: "Settings", href: "/account/settings", icon: Settings2Icon}
+  { label: "Settings", href: "/account/settings", icon: Settings2Icon },
+  { label: "Explore Tours", href: "/tours", icon: Compass },
 ];
 
 interface DashboardSidebarProps {
@@ -60,11 +61,10 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
             <Link
               key={href}
               href={href}
-              className={`flex items-center justify-center md:justify-start gap-3 px-0 md:px-3 py-3 md:py-2.5 rounded-lg text-sm font-body transition-all duration-200 group relative ${
-                isActive
+              className={`flex items-center justify-center md:justify-start gap-3 px-0 md:px-3 py-3 md:py-2.5 rounded-lg text-sm font-body transition-all duration-200 group relative ${isActive
                   ? "bg-white/15 text-white-pure border border-white/25 shadow-inner"
                   : "text-white-muted hover:text-white-pure hover:bg-white/[0.04]"
-              }`}
+                }`}
               title={label}
             >
               <Icon className={`w-5 h-5 md:w-4 md:h-4 shrink-0 transition-colors ${isActive ? "text-white-pure" : "text-white-muted group-hover:text-white-pure"}`} />

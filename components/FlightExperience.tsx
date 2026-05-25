@@ -102,13 +102,13 @@ export default function FlightExperience() {
         {TRUST_DATA.map((item, index) => (
           <div 
             key={index}
-            className={`trust-item-${index} absolute top-[40vh] ${item.side === 'left' ? 'left-[5vw] lg:left-[15vw]' : 'right-[5vw] lg:right-[15vw]'} w-[300px] md:w-[400px]`}
+            className={`trust-item-${index} absolute top-[15vh] md:top-[40vh] left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 ${item.side === 'left' ? 'md:left-[5vw] lg:left-[15vw]' : 'md:right-[5vw] lg:right-[15vw]'} w-[280px] md:w-[400px]`}
           >
             {/* The Cloud Platform */}
             <CloudSvg className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] md:w-[550px] opacity-90 filter blur-[12px] -z-10" />
             
             {/* The Text */}
-            <div className={`relative z-10 ${item.side === 'right' ? 'text-right' : 'text-left'}`}>
+            <div className={`relative z-10 text-center md:text-left ${item.side === 'right' ? 'md:text-right' : 'md:text-left'}`}>
               <h3 className="text-2xl md:text-3xl font-headline font-black text-slate-800 mb-2 leading-tight tracking-tight drop-shadow-sm">
                 {item.title}
               </h3>

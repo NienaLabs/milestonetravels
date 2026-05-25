@@ -970,6 +970,11 @@
   .dash-stats > :last-child { grid-column: span 2; }
 }
 
+@media (max-width: 480px) {
+  .dash-stats { grid-template-columns: 1fr; }
+  .dash-stats > :last-child { grid-column: span 1; }
+}
+
 .trip-card::after {
   content: '';
   position: absolute;

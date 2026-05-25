@@ -57,7 +57,7 @@ export default function CheckoutForm({ tour, user, booking }: CheckoutFormProps)
   const [isProcessing, setIsProcessing] = useState(false);
   
   const minDeposit = Math.min(Math.max(0.1 * tour.price, 1), remainingAmount);
-  const [deposit, setDeposit] = useState(minDeposit);
+  const [deposit, setDeposit] = useState<string | number>(minDeposit);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
@@ -71,7 +71,8 @@ export default function CheckoutForm({ tour, user, booking }: CheckoutFormProps)
     );
   }, { scope: containerRef });
   
-  const amount = mode === 'full' ? remainingAmount : Math.min(remainingAmount, Math.max(deposit, minDeposit));
+  const depositValue = typeof deposit === 'string' ? (deposit === '' ? 0 : Number(deposit)) : deposit;
+  const amount = mode === 'full' ? remainingAmount : depositValue;
 
   const config = {
     reference: `PAY-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
@@ -119,6 +120,11 @@ export default function CheckoutForm({ tour, user, booking }: CheckoutFormProps)
   };
 
   const handlePayment = async () => {
+    if (isNaN(amount) || amount <= 0) {
+      toast.error("Please enter a valid deposit amount");
+      return;
+    }
+
     if (amount < minDeposit) {
       toast.error(`Minimum deposit is ${fmtGhs(minDeposit)}`);
       return;
@@ -256,10 +262,18 @@ export default function CheckoutForm({ tour, user, booking }: CheckoutFormProps)
                       </div>
                       <Input
                         type="number"
+                        step="any"
                         min={minDeposit}
                         max={remainingAmount}
                         value={deposit}
-                        onChange={(e) => setDeposit(Number(e.target.value))}
+                        onChange={(e) => setDeposit(e.target.value)}
+                        onWheel={(e) => e.currentTarget.blur()}
+                        onKeyDown={(e) => {
+                          // Prevent arrow up/down from changing the value
+                          if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                            e.preventDefault();
+                          }
+                        }}
                         className="h-12 border-white/10 bg-[#0a192f] text-white placeholder:text-white/30 rounded-xl focus:border-cyan-500"
                       />
                       <p className="text-xs text-white/45 mt-1">
@@ -346,7 +360,7 @@ function ToggleCard({
           : 'border-white/10 bg-white/5 hover:bg-white/8'
       }`}
     >
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
           <div className="mb-2 inline-flex items-center gap-2 text-white/75">
             {icon}
@@ -354,7 +368,7 @@ function ToggleCard({
           </div>
           <p className="text-sm leading-6 text-white/50">{desc}</p>
         </div>
-        <div className="text-right">
+        <div className="text-left sm:text-right shrink-0">
           <p className="text-sm font-medium text-white">{value}</p>
           <p className="mt-1 text-xs uppercase tracking-[0.25em] text-white/35">{active ? 'Selected' : 'Choose'}</p>
         </div>

@@ -76,7 +76,7 @@ export default function FAQ() {
   }, { scope: containerRef });
 
   return (
-    <section id="faq" ref={containerRef} className="py-24 bg-blue-900 relative overflow-hidden">
+    <section id="faq" ref={containerRef} className="py-24 relative overflow-hidden" style={{ backgroundColor: 'var(--bg-story)' }}>
       {/* Decorative gradient */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-navy-bright rounded-full opacity-5 filter blur-[150px] pointer-events-none"></div>
 

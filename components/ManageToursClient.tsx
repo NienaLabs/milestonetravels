@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { Plus, Trash2, Calendar, PhoneCall, Link2, MapPin, Users, Upload, X, ArrowRight, Sparkles, MessageSquare, Copy } from "lucide-react";
+import { Plus, Trash2, Calendar, PhoneCall, Link2, MapPin, Users, Upload, X, ArrowRight, Sparkles, MessageSquare, Copy, Edit2 } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
 import Link from "next/link";
@@ -38,6 +38,31 @@ export default function ManageToursClient({ initialTours }: { initialTours: Tour
   const [tours, setTours] = useState<Tour[]>(initialTours);
   const [activeTab, setActiveTab] = useState<"list" | "add">("list");
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  const resetForm = () => {
+    setTitle(""); setDestination(""); setDescription("");
+    setDepartureDate(""); setReturnDate(""); setPrice("");
+    setImage(PRESET_IMAGES[0].url); setSpots("20");
+    setGroupChatLink(""); setEnquiryPhone(""); setImageFile(null);
+    setUploadProgress(0);
+    setEditingId(null);
+  };
+
+  const handleEditClick = (tour: Tour) => {
+    setEditingId(tour.id);
+    setTitle(tour.title);
+    setDestination(tour.destination);
+    setDescription(tour.description);
+    setDepartureDate(tour.departureDate.split("T")[0]);
+    setReturnDate(tour.returnDate.split("T")[0]);
+    setPrice(tour.price.toString());
+    setImage(tour.image || PRESET_IMAGES[0].url);
+    setSpots(tour.spots.toString());
+    setGroupChatLink(tour.groupChatLink || "");
+    setEnquiryPhone(tour.enquiryPhone || "");
+    setActiveTab("add");
+  };
 
   const copyReviewLink = (tourId: string) => {
     const link = `${window.location.origin}/review/${tourId}`;
@@ -98,31 +123,34 @@ export default function ManageToursClient({ initialTours }: { initialTours: Tour
         finalImageUrl = uploadData.url;
       }
 
-      const res = await fetch("/api/admin/tours", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title, destination, description, departureDate, returnDate,
-          price: parseFloat(price), image: finalImageUrl,
-          spots: parseInt(spots),
-          groupChatLink: groupChatLink || null,
-          enquiryPhone: enquiryPhone || null,
-        }),
-      });
+        const method = editingId ? "PATCH" : "POST";
+        const url = editingId ? `/api/admin/tours/${editingId}` : "/api/admin/tours";
 
-      const data = await res.json();
-      if (res.ok && data.success) {
-        toast.success("Tour deployed successfully.");
-        setTours([data.tour, ...tours]);
-        setActiveTab("list");
-        setTitle(""); setDestination(""); setDescription("");
-        setDepartureDate(""); setReturnDate(""); setPrice("");
-        setImage(PRESET_IMAGES[0].url); setSpots("20");
-        setGroupChatLink(""); setEnquiryPhone(""); setImageFile(null);
-        setUploadProgress(0);
-      } else {
-        throw new Error(data.error || "Failed to add tour");
-      }
+        const res = await fetch(url, {
+          method,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title, destination, description, departureDate, returnDate,
+            price: parseFloat(price), image: finalImageUrl,
+            spots: parseInt(spots),
+            groupChatLink: groupChatLink || null,
+            enquiryPhone: enquiryPhone || null,
+          }),
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          toast.success(editingId ? "Tour updated successfully." : "Tour deployed successfully.");
+          if (editingId) {
+            setTours(tours.map(t => t.id === editingId ? data.tour : t));
+          } else {
+            setTours([data.tour, ...tours]);
+          }
+          setActiveTab("list");
+          resetForm();
+        } else {
+          throw new Error(data.error || (editingId ? "Failed to update tour" : "Failed to add tour"));
+        }
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -157,8 +185,8 @@ export default function ManageToursClient({ initialTours }: { initialTours: Tour
           <button className={`tab-btn ${activeTab === "list" ? "active" : ""}`} onClick={() => setActiveTab("list")}>
             Active Tours <span className="tab-count">{tours.length}</span>
           </button>
-          <button className={`tab-btn ${activeTab === "add" ? "active" : ""}`} onClick={() => setActiveTab("add")}>
-            Deploy New Tour
+          <button className={`tab-btn ${activeTab === "add" ? "active" : ""}`} onClick={() => { setActiveTab("add"); if (!editingId) resetForm(); }}>
+            {editingId ? "Edit Tour" : "Deploy New Tour"}
           </button>
         </div>
 
@@ -231,6 +259,13 @@ export default function ManageToursClient({ initialTours }: { initialTours: Tour
                           {tour.spots} spots remaining
                         </span>
                         <button
+                          className="action-btn"
+                          style={{ border: "1px solid var(--white-10)", background: "var(--white-5)", padding: "0.25rem 0.5rem", borderRadius: "0.25rem", display: "flex", alignItems: "center", gap: "0.25rem", cursor: "pointer", color: "var(--white-muted)", fontSize: "0.75rem", transition: "all 0.2s" }}
+                          onClick={() => handleEditClick(tour)}
+                        >
+                          <Edit2 size={14} /> Edit
+                        </button>
+                        <button
                           className="del-btn"
                           onClick={() => handleDelete(tour.id)}
                           disabled={deletingId === tour.id}
@@ -259,8 +294,14 @@ export default function ManageToursClient({ initialTours }: { initialTours: Tour
         {activeTab === "add" && (
           <div className="form-wrap">
             <div className="form-header">
-              <h2 className="form-headline">Deploy a <em>New Journey</em></h2>
-              <p className="form-subline">Complete the specifications below to publish an ultra-premium tour to travelers.</p>
+              <h2 className="form-headline">
+                {editingId ? <>Update <em>Journey</em></> : <>Deploy a <em>New Journey</em></>}
+              </h2>
+              <p className="form-subline">
+                {editingId 
+                  ? "Update the details below to refine this highly curated tour." 
+                  : "Complete the specifications below to publish an ultra-premium tour to travelers."}
+              </p>
             </div>
 
             <form onSubmit={handleSubmit}>
@@ -392,10 +433,12 @@ export default function ManageToursClient({ initialTours }: { initialTours: Tour
                 {isSubmitting ? (
                   <>
                     <span className="spinner" />
-                    {isUploading ? "Uploading..." : "Deploying Tour..."}
+                    {isUploading ? "Uploading..." : editingId ? "Updating Tour..." : "Deploying Tour..."}
                   </>
                 ) : (
-                  <>Deploy Premium Tour <ArrowRight size={18} /></>
+                  <>
+                    {editingId ? "Update Premium Tour" : "Deploy Premium Tour"} <ArrowRight size={18} />
+                  </>
                 )}
               </button>
             </form>

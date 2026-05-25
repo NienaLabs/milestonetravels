@@ -237,6 +237,9 @@
     .slider-content {
         top: 12%;
         gap: 15px;
+        width: 90vw;
+        text-align: center;
+        align-items: center;
     }
     
     .slider-list::after {

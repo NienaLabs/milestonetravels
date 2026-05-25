@@ -404,7 +404,15 @@ export default function MyTripsClient({ bookings }: { bookings: Booking[] }) {
 
   return (
     <section className="trips-list" aria-label="Your bookings">
-      <p className="trips-list__eyebrow">Your Bookings</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <p className="trips-list__eyebrow !mb-0">Your Bookings</p>
+        <Link
+          href="/tours"
+          className="inline-flex items-center justify-center gap-2 py-2.5 px-5 bg-navy-bright text-white-pure rounded-lg text-[11px] font-bold font-body tracking-wider uppercase hover:bg-navy-sky transition-all shadow-md hover:shadow-navy-bright/30 shrink-0 self-start sm:self-auto"
+        >
+          Explore More Tours <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
+      </div>
       <div className="trips-list__grid">
         {bookings.map((b) => <TripCard key={b.id} booking={b} />)}
       </div>
