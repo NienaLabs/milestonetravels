@@ -11,7 +11,7 @@ import TourTravelersClient from "@/components/TourTravelersClient";
 export default async function TourTravelersPage({
   params,
 }: {
-  params: { tourId: string };
+  params: Promise<{ tourId: string }>;
 }) {
   const session = await auth.api.getSession({
     headers: await headers(),

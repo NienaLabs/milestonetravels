@@ -30,6 +30,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   bookings      Booking[]
+  supportMessages SupportMessage[]
 
   @@unique([email])
   @@map("user")
@@ -144,6 +145,28 @@ model Account {
 
   @@index([userId])
   @@map("account")
+}
+
+model SupportMessage {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject   String
+  message   String
+  status    String   @default("OPEN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("support_message")
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+
+  @@map("newsletter_subscriber")
 }
 
 model Verification {

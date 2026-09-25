@@ -10,7 +10,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
       headers: await headers(),
     });
 
-    if (!session || !isAdmin(session.user.email)) {
+    if (!session || !isAdmin(session.user)) {
       return NextResponse.json({ error: "Unauthorized access" }, { status: 403 });
     }
 
@@ -33,7 +33,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       headers: await headers(),
     });
 
-    if (!session || !isAdmin(session.user.email)) {
+    if (!session || !isAdmin(session.user)) {
       return NextResponse.json({ error: "Unauthorized access" }, { status: 403 });
     }
 
@@ -53,6 +53,10 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       enquiryPhone,
     } = body;
 
+    if (!title || !destination || !description || !departureDate || !returnDate || !price) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
     const updatedTour = await prisma.tour.update({
       where: { id },
       data: {
@@ -61,11 +65,11 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
         description,
         departureDate: new Date(departureDate),
         returnDate: new Date(returnDate),
-        price,
-        image,
-        spots,
-        groupChatLink,
-        enquiryPhone,
+        price: parseFloat(price),
+        image: image || null,
+        spots: spots ? parseInt(spots) : 20,
+        groupChatLink: groupChatLink || null,
+        enquiryPhone: enquiryPhone || null,
       },
     });
 

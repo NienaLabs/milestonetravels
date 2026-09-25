@@ -59,6 +59,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Amount paid cannot exceed total tour price" }, { status: 400 });
     }
 
+    const bookingsCount = await prisma.booking.count({ where: { tourId: tour.id } });
+    if (bookingsCount >= tour.spots) {
+      return NextResponse.json({ error: "This tour is fully booked" }, { status: 400 });
+    }
+
     // Create the manual booking
     const booking = await prisma.booking.create({
       data: {

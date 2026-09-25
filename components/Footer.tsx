@@ -1,8 +1,39 @@
 "use client";
-import React from 'react';
-import { MapPin, Phone, Mail, Instagram, Facebook, Twitter, Send } from 'lucide-react';
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { MapPin, Phone, Mail, Instagram, Facebook, Twitter, Send, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function Footer() {
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [isSubscribing, setIsSubscribing] = useState(false);
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail.trim()) {
+      toast.error('Please enter your email address.');
+      return;
+    }
+    setIsSubscribing(true);
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: newsletterEmail }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to subscribe');
+      }
+      toast.success("You're subscribed! Watch your inbox for new tours.");
+      setNewsletterEmail('');
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to subscribe');
+    } finally {
+      setIsSubscribing(false);
+    }
+  };
+
   return (
     <footer className="relative bg-[#040a22] text-white-soft pt-24 pb-10 overflow-hidden border-t border-white/5">
       {/* Decorative gradient */}
@@ -36,10 +67,10 @@ export default function Footer() {
           <div className="col-span-1">
             <h3 className="text-lg font-headline font-bold text-white-pure uppercase tracking-wider mb-8">Explore</h3>
             <ul className="flex flex-col gap-4 font-body text-sm">
-              <li><a href="#" className="hover:text-navy-sky transition-colors flex items-center gap-3 group"><span className="w-1.5 h-1.5 bg-navy-sky rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span> Upcoming Tours</a></li>
-              <li><a href="#" className="hover:text-navy-sky transition-colors flex items-center gap-3 group"><span className="w-1.5 h-1.5 bg-navy-sky rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span> Flight Bookings</a></li>
-              <li><a href="#" className="hover:text-navy-sky transition-colors flex items-center gap-3 group"><span className="w-1.5 h-1.5 bg-navy-sky rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span> Luxury Stays</a></li>
-              <li><a href="#" className="hover:text-navy-sky transition-colors flex items-center gap-3 group"><span className="w-1.5 h-1.5 bg-navy-sky rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span> About Us</a></li>
+              <li><Link href="/tours" className="hover:text-navy-sky transition-colors flex items-center gap-3 group"><span className="w-1.5 h-1.5 bg-navy-sky rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span> Upcoming Tours</Link></li>
+              <li><Link href="/tours" className="hover:text-navy-sky transition-colors flex items-center gap-3 group"><span className="w-1.5 h-1.5 bg-navy-sky rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span> Flight Bookings</Link></li>
+              <li><Link href="/tours" className="hover:text-navy-sky transition-colors flex items-center gap-3 group"><span className="w-1.5 h-1.5 bg-navy-sky rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span> Luxury Stays</Link></li>
+              <li><Link href="/#services" className="hover:text-navy-sky transition-colors flex items-center gap-3 group"><span className="w-1.5 h-1.5 bg-navy-sky rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span> About Us</Link></li>
             </ul>
           </div>
 
@@ -78,16 +109,24 @@ export default function Footer() {
             <p className="font-body text-sm leading-relaxed mb-6">
               Subscribe to get exclusive access to our newest luxury tour packages and travel tips.
             </p>
-            <div className="relative group">
-              <input 
-                type="email" 
-                placeholder="Enter your email" 
-                className="w-full bg-white/5 border border-white/10 rounded-full px-6 py-4 text-sm text-white-pure focus:outline-none focus:border-navy-sky transition-colors"
+            <form onSubmit={handleNewsletterSubmit} className="relative group">
+              <input
+                type="email"
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
+                placeholder="Enter your email"
+                disabled={isSubscribing}
+                className="w-full bg-white/5 border border-white/10 rounded-full px-6 py-4 text-sm text-white-pure focus:outline-none focus:border-navy-sky transition-colors disabled:opacity-60"
               />
-              <button aria-label="Subscribe" className="absolute right-2 top-2 bottom-2 aspect-square bg-navy-sky rounded-full flex items-center justify-center text-white-pure hover:scale-105 transition-transform duration-300">
-                <Send size={16} className="-ml-1" />
+              <button
+                type="submit"
+                aria-label="Subscribe"
+                disabled={isSubscribing}
+                className="absolute right-2 top-2 bottom-2 aspect-square bg-navy-sky rounded-full flex items-center justify-center text-white-pure hover:scale-105 transition-transform duration-300 disabled:opacity-60"
+              >
+                {isSubscribing ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} className="-ml-1" />}
               </button>
-            </div>
+            </form>
           </div>
 
         </div>
@@ -96,8 +135,8 @@ export default function Footer() {
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-body text-white-muted">
           <p>&copy; {new Date().getFullYear()} Milestone Travels. All rights reserved.</p>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-white-pure transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white-pure transition-colors">Terms of Service</a>
+            <Link href="/privacy" className="hover:text-white-pure transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-white-pure transition-colors">Terms of Service</Link>
           </div>
         </div>
       </div>

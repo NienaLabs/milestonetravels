@@ -92,7 +92,8 @@ export default function Services() {
   useEffect(() => {
     startAutoPlay();
     return () => stopAutoPlay();
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // In the original JS, the thumbnail list offsets the first item to the end
   const thumbnailItems = [...items.slice(1), items[0]];

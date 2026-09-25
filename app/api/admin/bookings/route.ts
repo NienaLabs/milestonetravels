@@ -10,7 +10,7 @@ export async function GET() {
       headers: await headers(),
     });
 
-    if (!session || !isAdmin(session.user.email)) {
+    if (!session || !isAdmin(session.user)) {
       return NextResponse.json({ error: "Unauthorized access" }, { status: 403 });
     }
 

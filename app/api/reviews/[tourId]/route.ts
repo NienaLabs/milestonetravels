@@ -51,16 +51,37 @@ export async function POST(
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    if (rating < 1 || rating > 5) {
-      return NextResponse.json({ error: "Rating must be between 1 and 5" }, { status: 400 });
+    if (typeof reviewerName !== "string" || typeof comment !== "string") {
+      return NextResponse.json({ error: "Invalid field types" }, { status: 400 });
+    }
+
+    const trimmedName = reviewerName.trim();
+    const trimmedComment = comment.trim();
+
+    if (!trimmedName || trimmedName.length > 100) {
+      return NextResponse.json({ error: "Name must be between 1 and 100 characters" }, { status: 400 });
+    }
+
+    if (!trimmedComment || trimmedComment.length > 2000) {
+      return NextResponse.json({ error: "Comment must be between 1 and 2000 characters" }, { status: 400 });
+    }
+
+    const numericRating = Number(rating);
+    if (!Number.isInteger(numericRating) || numericRating < 1 || numericRating > 5) {
+      return NextResponse.json({ error: "Rating must be a whole number between 1 and 5" }, { status: 400 });
+    }
+
+    const tourExists = await prisma.tour.findUnique({ where: { id: tourId }, select: { id: true } });
+    if (!tourExists) {
+      return NextResponse.json({ error: "Tour not found" }, { status: 404 });
     }
 
     const review = await prisma.review.create({
       data: {
         tourId,
-        reviewerName,
-        rating,
-        comment,
+        reviewerName: trimmedName,
+        rating: numericRating,
+        comment: trimmedComment,
       },
     });
 

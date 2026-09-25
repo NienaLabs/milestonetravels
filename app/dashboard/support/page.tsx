@@ -9,21 +9,33 @@ export default function SupportPage() {
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!subject.trim() || !message.trim()) {
       toast.error("Please fill in all fields.");
       return;
     }
     setIsSubmitting(true);
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/support", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subject, message }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Failed to send message");
+      }
       toast.success("Message sent!", {
         description: "Our team will respond within 24 hours.",
       });
       setSubject("");
       setMessage("");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to send message");
+    } finally {
       setIsSubmitting(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -88,8 +100,8 @@ export default function SupportPage() {
             <div className="space-y-4">
               {[
                 { icon: Mail, label: "Email", value: "hello@milestonetravels.com" },
-                { icon: Phone, label: "Phone", value: "+1 (800) 555-0123" },
-                { icon: MessageSquare, label: "WhatsApp", value: "+1 (800) 555-0199" },
+                { icon: Phone, label: "Phone", value: "024 086 5502" },
+                { icon: MessageSquare, label: "WhatsApp", value: "054 813 3096" },
               ].map(({ icon: Icon, label, value }) => (
                 <div key={label} className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-lg bg-navy-bright/15 border border-navy-bright/20 flex items-center justify-center shrink-0">

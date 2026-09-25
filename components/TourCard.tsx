@@ -15,6 +15,9 @@ export default function TourCard({ tour }: { tour: any }) {
     (new Date(tour.returnDate).getTime() - new Date(tour.departureDate).getTime()) / (1000 * 60 * 60 * 24),
   );
 
+  const spotsRemaining: number = tour.spotsRemaining ?? tour.spots;
+  const isFull = spotsRemaining <= 0;
+
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-2xl bg-white/[0.03] border border-white/[0.07] hover:border-white/[0.15] transition-all duration-500 hover:-translate-y-1">
       {/* Image */}
@@ -65,21 +68,29 @@ export default function TourCard({ tour }: { tour: any }) {
           </div>
           <div className="flex items-center gap-1.5 text-white/40 ml-auto">
             <Users size={11} strokeWidth={1.5} />
-            <span className="font-body text-[10px] tracking-wider">{tour.spots}</span>
+            <span className="font-body text-[10px] tracking-wider">
+              {isFull ? 'Fully booked' : `${spotsRemaining} spot${spotsRemaining !== 1 ? 's' : ''} left`}
+            </span>
           </div>
         </div>
 
         {/* CTA */}
-        <Link
-          href={`/checkout/${tour.id}`}
-          className="flex items-center justify-between w-full py-3 px-4 bg-white text-black font-body text-xs font-bold tracking-[0.15em] uppercase rounded-lg hover:bg-white/90 transition-colors group/btn"
-        >
-          <span>Book Now</span>
-          <ArrowUpRight
-            size={14}
-            className="transition-transform duration-300 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5"
-          />
-        </Link>
+        {isFull ? (
+          <div className="flex items-center justify-center w-full py-3 px-4 bg-white/10 text-white/40 font-body text-xs font-bold tracking-[0.15em] uppercase rounded-lg cursor-not-allowed">
+            Fully Booked
+          </div>
+        ) : (
+          <Link
+            href={`/checkout/${tour.id}`}
+            className="flex items-center justify-between w-full py-3 px-4 bg-white text-black font-body text-xs font-bold tracking-[0.15em] uppercase rounded-lg hover:bg-white/90 transition-colors group/btn"
+          >
+            <span>Book Now</span>
+            <ArrowUpRight
+              size={14}
+              className="transition-transform duration-300 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5"
+            />
+          </Link>
+        )}
       </div>
     </article>
   );

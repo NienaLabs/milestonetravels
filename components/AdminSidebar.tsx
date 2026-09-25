@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { Globe, Users, Receipt, PlusCircle, Megaphone, LogOut } from "lucide-react";
+import { Globe, Users, Receipt, PlusCircle, Megaphone, LogOut, Mail } from "lucide-react";
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
 
@@ -104,6 +104,19 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
         >
           <Users className={`w-5 h-5 md:w-4 md:h-4 shrink-0 ${isActive("/admin/users") ? "text-navy-bright" : "text-navy-sky"}`} />
           <span className="hidden md:block font-medium">Users</span>
+        </Link>
+
+        <Link
+          href="/admin/support"
+          title="Support Enquiries"
+          className={`flex items-center justify-center md:justify-start gap-3 px-3 py-3 md:py-2.5 rounded-lg text-sm font-body transition-all duration-200 ${
+            isActive("/admin/support")
+              ? "text-white-pure bg-navy-bright/20 border border-navy-bright/30"
+              : "text-white-muted hover:text-white-pure hover:bg-white/[0.04]"
+          }`}
+        >
+          <Mail className={`w-5 h-5 md:w-4 md:h-4 shrink-0 ${isActive("/admin/support") ? "text-navy-bright" : "text-navy-sky"}`} />
+          <span className="hidden md:block font-medium">Support Enquiries</span>
         </Link>
       </nav>
 

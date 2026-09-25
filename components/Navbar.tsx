@@ -49,7 +49,7 @@ export default function Navbar() {
                   DASHBOARD
                   <span className="absolute -bottom-1 left-0 w-full h-[2px] bg-white-pure scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
                 </Link>
-                {isAdmin(session.user?.email) && (
+                {isAdmin(session.user) && (
                   <Link href="/admin" className="text-[13px] font-body font-medium text-navy-sky hover:text-white-pure transition-colors relative group">
                     ADMIN PORTAL
                     <span className="absolute -bottom-1 left-0 w-full h-[2px] bg-white-pure scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
@@ -113,9 +113,9 @@ export default function Navbar() {
                 >
                   DASHBOARD
                 </Link>
-                {isAdmin(session.user?.email) && (
-                  <Link 
-                    href="/admin" 
+                {isAdmin(session.user) && (
+                  <Link
+                    href="/admin"
                     onClick={() => setMobileMenuOpen(false)}
                     className={`text-lg font-body font-semibold tracking-wider transition-colors ${pathname.startsWith('/admin') ? 'text-navy-sky' : 'text-white-pure hover:text-navy-sky'}`}
                   >

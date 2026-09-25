@@ -10,14 +10,38 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { reference, tourId, amountToPay, totalTourPrice } = await request.json();
+    const { reference, tourId, amountToPay } = await request.json();
 
-    if (!reference || !tourId || amountToPay == null || totalTourPrice == null) {
+    if (!reference || !tourId || amountToPay == null) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    if (amountToPay < totalTourPrice * 0.1) {
+    // Always use the tour price from the database — never trust a client-supplied price.
+    const tour = await prisma.tour.findUnique({ where: { id: tourId } });
+    if (!tour) {
+      return NextResponse.json({ error: "Tour not found" }, { status: 404 });
+    }
+
+    if (amountToPay < tour.price * 0.1) {
       return NextResponse.json({ error: "Minimum payment is 10%" }, { status: 400 });
+    }
+
+    // Check if user already booked this tour
+    let booking = await prisma.booking.findFirst({
+      where: { userId: session.user.id, tourId }
+    });
+
+    // Only enforce capacity for a brand-new booking — topping up an existing one doesn't take a new spot.
+    if (!booking) {
+      const bookingsCount = await prisma.booking.count({ where: { tourId } });
+      if (bookingsCount >= tour.spots) {
+        return NextResponse.json({ error: "This tour is fully booked" }, { status: 400 });
+      }
+    }
+
+    const remainingBalance = tour.price - (booking?.amountPaid || 0);
+    if (amountToPay > remainingBalance) {
+      return NextResponse.json({ error: "Payment exceeds the remaining balance" }, { status: 400 });
     }
 
     // Call Paystack API to verify the transaction
@@ -45,27 +69,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Paid amount does not match expected amount" }, { status: 400 });
     }
 
-    // Check if user already booked this tour
-    let booking = await prisma.booking.findFirst({
-      where: { userId: session.user.id, tourId }
-    });
-
     if (!booking) {
       booking = await prisma.booking.create({
         data: {
           userId: session.user.id,
           tourId,
-          totalPrice: totalTourPrice,
+          totalPrice: tour.price,
           amountPaid: amountToPay,
-          status: "CONFIRMED"
+          status: amountToPay >= tour.price ? "CONFIRMED" : "PENDING"
         }
       });
     } else {
+      const newAmountPaid = booking.amountPaid + amountToPay;
       // Update amount paid
       booking = await prisma.booking.update({
         where: { id: booking.id },
         data: {
-          amountPaid: booking.amountPaid + amountToPay
+          amountPaid: newAmountPaid,
+          status: newAmountPaid >= booking.totalPrice ? "CONFIRMED" : "PENDING"
         }
       });
     }

@@ -3,6 +3,11 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { isAdmin } from "@/lib/admin";
 import AdminSidebar from "@/components/AdminSidebar";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Admin Portal | Milestone Travels",
+};
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth.api.getSession({

@@ -1,5 +1,6 @@
 "use client";
 import React, { useRef } from 'react';
+import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -31,10 +32,10 @@ export default function CTA() {
         <h2 className="cta-headline type-hero-italic mb-12 text-white-pure">Your Next Journey Awaits</h2>
         
         <div className="cta-btn-container flex justify-center items-center">
-          <button className="group relative px-10 py-5 rounded-full bg-white-pure text-navy-deep font-headline font-bold text-lg md:text-xl uppercase tracking-widest overflow-hidden transition-all hover:scale-105 shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:shadow-[0_0_60px_rgba(255,255,255,0.4)]">
+          <Link href="/tours" className="group relative px-10 py-5 rounded-full bg-white-pure text-navy-deep font-headline font-bold text-lg md:text-xl uppercase tracking-widest overflow-hidden transition-all hover:scale-105 shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:shadow-[0_0_60px_rgba(255,255,255,0.4)]">
             <span className="relative z-10 transition-colors duration-500 group-hover:text-white-pure">See Upcoming Tours</span>
             <div className="absolute inset-0 bg-navy-sky translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-0"></div>
-          </button>
+          </Link>
         </div>
       </div>
     </section>

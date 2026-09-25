@@ -4,6 +4,19 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Navbar from "@/components/Navbar";
 import CheckoutForm from "@/components/CheckoutForm";
+import type { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ tourId: string }>;
+}): Promise<Metadata> {
+  const { tourId } = await params;
+  const tour = await prisma.tour.findUnique({ where: { id: tourId }, select: { title: true } });
+  return {
+    title: tour ? `Checkout — ${tour.title} | Milestone Travels` : "Checkout | Milestone Travels",
+  };
+}
 
 export default async function CheckoutPage({
   params,
@@ -38,6 +51,18 @@ export default async function CheckoutPage({
       tourId: tour.id,
     }
   });
+
+  if (!existingBooking) {
+    const bookingsCount = await prisma.booking.count({ where: { tourId: tour.id } });
+    if (bookingsCount >= tour.spots) {
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center text-white gap-4 text-center px-6">
+          <p className="text-2xl font-headline font-bold">This tour is fully booked</p>
+          <p className="text-white/60">All spots for {tour.title} have been reserved. Check back for our next departures.</p>
+        </div>
+      );
+    }
+  }
 
   return (
     <div className="min-h-screen text-white overflow-hidden">
